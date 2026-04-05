@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tier List Maker - Finaltime Studios Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@900&display=swap');
+
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --surface-hover: #334155;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --danger: #ef4444;
+            
+            /* Tier Colors */
+            --tier-s: #ff7f7f; 
+            --tier-a: #ffbf7f; 
+            --tier-b: #ffff7f; 
+            --tier-c: #7fff7f; 
+            --tier-d: #7fbfff; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(to right, #38bdf8, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Toolbar / Controles */
+        .toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 1000px;
+            flex-wrap: wrap;
+            background: var(--surface-color);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
+        .btn:active { transform: scale(0.95); }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #b91c1c; }
+
+        /* Escondendo o input de arquivo original */
+        input[type="file"] { display: none; }
+
+        /* Área de Captura (O que vai virar PNG) */
+        #capture-area {
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--bg-color); /* Fundo da imagem gerada */
+            padding: 10px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        /* Container Principal da Tier List */
+        .board {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            background-color: #000;
+            border: 4px solid #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tier-row {
+            display: flex;
+            background-color: #1a1a1a;
+            min-height: 100px;
+            border-bottom: 2px solid #000;
+        }
+        .tier-row:last-child { border-bottom: none; }
+
+        .tier-label {
+            width: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #111;
+            text-align: center;
+            padding: 10px;
+            flex-shrink: 0;
+            border-right: 4px solid #000;
+            outline: none; /* Remove borda ao digitar */
+            cursor: text;
+        }
+
+        .tier-s .tier-label { background-color: var(--tier-s); }
+        .tier-a .tier-label { background-color: var(--tier-a); }
+        .tier-b .tier-label { background-color: var(--tier-b); }
+        .tier-c .tier-label { background-color: var(--tier-c); }
+        .tier-d .tier-label { background-color: var(--tier-d); }
+
+        .drop-zone {
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            min-height: 100px;
+            transition: background-color 0.2s;
+        }
+
+        .drop-zone.drag-over { background-color: rgba(255, 255, 255, 0.1); }
+
+        /* Marca d'água dentro da área de captura */
+        .watermark {
+            text-align: right;
+            padding: 10px 5px 0 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Banco de Itens (Pool) */
+        .item-pool-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 30px;
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .item-pool-wrapper h3 { margin-bottom: 15px; color: var(--text-muted); }
+
+        /* Estilo das Imagens/Itens */
+        .item {
+            width: 90px;
+            height: 90px;
+            background-color: var(--surface-hover);
+            cursor: grab;
+            user-select: none;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid transparent;
+            transition: transform 0.1s;
+            position: relative;
+        }
+
+        /* Botão de excluir que aparece ao passar o mouse */
+        .item .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .item:hover { transform: scale(1.05); z-index: 10; border-color: white; }
+        .item:hover .delete-btn { display: flex; }
+        .item:active { cursor: grabbing; transform: scale(0.95); }
+        .item.dragging { opacity: 0.5; }
+
+        /* Para evitar que a imagem fantasma padrão do navegador bugue */
+        .item img { pointer-events: none; } 
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TIER LIST MAKER</h1>
+        <div class="subtitle">Powered by Finaltime Studios</div>
+    </div>
+
+    <div class="toolbar">
+        <label for="imageUpload" class="btn">
+            📷 Adicionar Imagens
+        </label>
+        <input type="file" id="imageUpload" accept="image/*" multiple>
+        
+        <button class="btn" id="exportBtn">📥 Exportar Imagem (.PNG)</button>
+        <button class="btn btn-danger" id="clearBtn">🗑️ Limpar Tudo</button>
+    </div>
+
+    <div id="capture-area">
+        <div class="board" id="mainBoard">
+            <div class="tier-row tier-s">
+                <div class="tier-label" contenteditable="true">S</div>
+                <div class="drop-zone" id="zone-s"></div>
+            </div>
+            <div class="tier-row tier-a">
+                <div class="tier-label" contenteditable="true">A</div>
+                <div class="drop-zone" id="zone-a"></div>
+            </div>
+            <div class="tier-row tier-b">
+                <div class="tier-label" contenteditable="true">B</div>
+                <div class="drop-zone" id="zone-b"></div>
+            </div>
+            <div class="tier-row tier-c">
+                <div class="tier-label" contenteditable="true">C</div>
+                <div class="drop-zone" id="zone-c"></div>
+            </div>
+            <div class="tier-row tier-d">
+                <div class="tier-label" contenteditable="true">D</div>
+                <div class="drop-zone" id="zone-d"></div>
+            </div>
+        </div>
+        <div class="watermark">FINALTIME STUDIOS</div>
+    </div>
+
+    <div class="item-pool-wrapper">
+        <h3>Banco de Itens (Arraste as imagens daqui)</h3>
+        <div class="drop-zone" id="itemPool" style="min-height: 120px; border: 2px dashed #334155; padding: 10px;">
+            </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            const itemPool = document.getElementById('itemPool');
+            const imageUpload = document.getElementById('imageUpload');
+            const exportBtn = document.getElementById('exportBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const tierLabels = document.querySelectorAll('.tier-label');
+
+            let draggedElement = null;
+
+            // ===== SISTEMA DE DRAG AND DROP =====
+            function makeItemDraggable(item) {
+                item.addEventListener('dragstart', function(e) {
+                    draggedElement = this;
+                    setTimeout(() => this.classList.add('dragging'), 0);
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                item.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                    draggedElement = null;
+                    saveState(); // Salva automaticamente ao soltar
+                });
+
+                // Botão de deletar item
+                const delBtn = item.querySelector('.delete-btn');
+                if(delBtn) {
+                    delBtn.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Impede que arraste ao clicar em deletar
+                        item.remove();
+                        saveState();
+                    });
+                }
+            }
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    if (draggedElement) {
+                        this.appendChild(draggedElement);
+                        saveState(); // Salva automaticamente ao soltar
+                    }
+                });
+            });
+
+            // ===== UPLOAD DE IMAGENS =====
+            imageUpload.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            createItem(event.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                this.value = ''; // Reseta o input
+            });
+
+            function createItem(imageSrc) {
+                const item = document.createElement('div');
+                item.classList.add('item');
+                item.setAttribute('draggable', 'true');
+                item.style.backgroundImage = `url(${imageSrc})`;
+                
+                const delBtn = document.createElement('button');
+                delBtn.classList.add('delete-btn');
+                delBtn.innerHTML = '✕';
+                item.appendChild(delBtn);
+
+                makeItemDraggable(item);
+                itemPool.appendChild(item);
+                saveState();
+            }
+
+            // ===== EXPORTAR COMO PNG (MÁGICA DO HTML2CANVAS) =====
+            exportBtn.addEventListener('click', () => {
+                const captureArea = document.getElementById('capture-area');
+                
+                // Muda o texto do botão para dar feedback
+                const originalText = exportBtn.innerHTML;
+                exportBtn.innerHTML = '⏳ Gerando Imagem...';
+                
+                html2canvas(captureArea, {
+                    backgroundColor: '#0f172a', // Cor de fundo da imagem gerada
+                    scale: 2, // Aumenta a qualidade/resolução do PNG
+                    logging: false
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'Finaltime_TierList.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    exportBtn.innerHTML = originalText;
+                });
+            });
+
+            // ===== LIMPAR TUDO =====
+            clearBtn.addEventListener('click', () => {
+                if(confirm('Tem certeza que deseja apagar todos os itens da Tier List?')) {
+                    document.querySelectorAll('.item').forEach(item => item.remove());
+                    localStorage.removeItem('finaltimeTierList');
+                }
+            });
+
+            // ===== SISTEMA DE SAVE/LOAD (LOCALSTORAGE) =====
+            // Salva os nomes das tiers e os itens de cada zona
+            function saveState() {
+                const state = {
+                    labels: [],
+                    zones: {}
+                };
+
+                // Salva os nomes digitados (S, A, B...)
+                tierLabels.forEach((label, index) => {
+                    state.labels.push(label.innerText);
+                    // Adiciona evento para salvar se o usuário digitar algo novo
+                    label.onblur = saveState; 
+                });
+
+                // Salva o HTML interno (as imagens) de cada drop-zone
+                dropZones.forEach(zone => {
+                    state.zones[zone.id] = zone.innerHTML;
+                });
+
+                try {
+                    localStorage.setItem('finaltimeTierList', JSON.stringify(state));
+                } catch(e) {
+                    console.log('Limite de armazenamento excedido (muitas imagens).');
+                }
+            }
+
+            function loadState() {
+                const saved = localStorage.getItem('finaltimeTierList');
+                if (saved) {
+                    const state = JSON.stringify(saved) ? JSON.parse(saved) : null;
+                    if(state) {
+                        // Restaura os textos das labels
+                        tierLabels.forEach((label, index) => {
+                            if(state.labels[index]) label.innerText = state.labels[index];
+                            label.onblur = saveState;
+                        });
+
+                        // Restaura as imagens nas zonas corretas
+                        dropZones.forEach(zone => {
+                            if(state.zones[zone.id]) {
+                                zone.innerHTML = state.zones[zone.id];
+                                // Como recriamos o HTML, precisamos reativar o drag and drop nas imagens
+                                Array.from(zone.children).forEach(item => makeItemDraggable(item));
+                            }
+                        });
+                    }
+                } else {
+                    tierLabels.forEach(label => label.onblur = saveState);
+                }
+            }
+
+            // Inicia o Load ao abrir a página
+            loadState();
+        });
+    </script>
+</body>
+</html>
