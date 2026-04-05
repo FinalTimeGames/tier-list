@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tier List Maker | Finaltime Studios</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Montserrat:wght@900&display=swap');
 
@@ -17,7 +18,6 @@
             --accent: #2563eb;
             --accent-hover: #1d4ed8;
             --danger: #dc2626;
-            --danger-hover: #b91c1c;
             --border: #3f3f46;
             --radius: 6px;
             --font-main: 'Inter', sans-serif;
@@ -38,38 +38,24 @@
 
         /* Navbar */
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 32px;
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px; background: var(--bg-surface);
+            border-bottom: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         
         .brand {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
-            color: #ffffff;
-            cursor: pointer;
-            text-transform: uppercase;
+            font-family: var(--font-display); font-size: 1.4rem; letter-spacing: -0.5px;
+            color: #ffffff; cursor: pointer; text-transform: uppercase;
         }
         .brand span { color: var(--text-muted); font-weight: 400; }
 
         .nav-controls { display: flex; gap: 12px; align-items: center; }
 
         select, button {
-            font-family: var(--font-main);
-            background: var(--bg-elevated);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            font-family: var(--font-main); background: var(--bg-elevated);
+            color: var(--text-main); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: var(--radius); cursor: pointer;
+            font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;
         }
         button:hover { background: #3f3f46; }
         .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
@@ -123,7 +109,7 @@
         .board { display: flex; flex-direction: column; gap: 2px; background: #000; border: 2px solid #000; border-radius: 6px; overflow: hidden; }
         
         .tier-row { display: flex; min-height: 110px; background: #1a1a1a; position: relative; }
-        .tier-label-container { width: 130px; display: flex; flex-direction: column; border-right: 2px solid #000; }
+        .tier-label-container { width: 130px; display: flex; flex-direction: column; border-right: 2px solid #000; flex-shrink: 0;}
         .tier-label {
             flex-grow: 1; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: 800; color: #111; text-align: center;
@@ -131,9 +117,7 @@
         }
         
         /* Tier Tools Panel */
-        .tier-settings {
-            display: flex; flex-wrap: wrap; background: #222; border-top: 1px solid #333;
-        }
+        .tier-settings { display: flex; flex-wrap: wrap; background: #222; border-top: 1px solid #333; }
         .tier-btn {
             flex: 1; background: none; border: none; border-right: 1px solid #333;
             color: #aaa; font-size: 0.7rem; padding: 6px 0; font-weight: 600; text-transform: uppercase;
@@ -141,16 +125,12 @@
         .tier-btn:last-child { border: none; }
         .tier-btn:hover { background: #333; color: #fff; }
         .tier-btn.color-picker { position: relative; overflow: hidden; }
-        .tier-btn input[type="color"] {
-            position: absolute; right: -10px; top: -10px; width: 200%; height: 200%;
-            cursor: pointer; opacity: 0;
-        }
+        .tier-btn input[type="color"] { position: absolute; right: -10px; top: -10px; width: 200%; height: 200%; cursor: pointer; opacity: 0; }
 
         .drop-zone {
             flex-grow: 1; display: flex; flex-wrap: wrap; align-content: flex-start;
-            padding: 8px; gap: 8px; transition: background 0.2s; min-height: 110px;
+            padding: 8px; gap: 8px; min-height: 110px;
         }
-        .drop-zone.drag-over { background: rgba(255, 255, 255, 0.08); }
 
         .add-tier-btn {
             width: 100%; background: var(--bg-surface); border: 1px solid var(--border);
@@ -171,7 +151,9 @@
             border-radius: var(--radius); padding: 12px; display: flex; flex-wrap: wrap;
             gap: 8px; align-content: flex-start; position: relative;
         }
-        .pool-zone.drag-over { border-color: var(--accent); background: rgba(37, 99, 235, 0.05); }
+        /* Para mostrar indicação visual de arrasto de OS */
+        .pool-zone.drag-active { border-color: var(--accent); background: rgba(37, 99, 235, 0.05); }
+        
         .drag-notice {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             color: #52525b; font-size: 1rem; font-weight: 500; pointer-events: none; text-align: center; width: 100%;
@@ -184,27 +166,41 @@
             cursor: grab; position: relative; display: flex; align-items: center;
             justify-content: center; text-align: center; font-size: 0.8rem; font-weight: 600;
             border: 2px solid transparent; user-select: none; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            transition: transform 0.1s;
         }
         .item.text-item { background: var(--bg-elevated); border: 1px solid var(--border); padding: 4px; color: #fff; word-break: break-word;}
-        .item:hover { z-index: 10; border-color: var(--text-main); transform: scale(1.05); }
-        .item:active { cursor: grabbing; }
-        .item.dragging { opacity: 0.4; transform: scale(0.95); }
+        .item:hover { z-index: 10; border-color: var(--text-main); }
         
+        /* O famoso Botão de Excluir Perfeito */
         .delete-item {
-            position: absolute; top: -6px; right: -6px; background: var(--danger);
-            color: white; border: none; width: 18px; height: 18px; border-radius: 50%;
-            font-size: 9px; cursor: pointer; display: none; font-weight: bold;
+            position: absolute; top: -8px; right: -8px; background: var(--danger);
+            color: white; border: none; width: 22px; height: 22px; border-radius: 50%;
+            font-size: 12px; cursor: pointer; display: none; font-weight: bold;
+            align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 20;
         }
-        .item:hover .delete-item { display: block; }
+        .item:hover .delete-item { display: flex; }
         
         input[type="file"] { display: none; }
+
+        /* SortableJS Classes - Animações Premium */
+        .sortable-ghost { opacity: 0.3; }
+        .sortable-drag { opacity: 1 !important; transform: scale(1.05); cursor: grabbing !important; }
 
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-base); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .tier-label-container { width: 80px; }
+            .tier-label { font-size: 0.9rem; padding: 5px; }
+            .item { width: 60px; height: 60px; font-size: 0.7rem; }
+            .delete-item { display: flex; opacity: 0.7; } /* No mobile o hover n existe, então deixamos o X visivel sutilmente */
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .toolbar-group { justify-content: space-between; }
+        }
     </style>
 </head>
 <body>
@@ -237,7 +233,7 @@
                 <button onclick="app.goHome()" id="t-home">Back to Home</button>
             </div>
             <div class="toolbar-group">
-                <label for="imageUpload" class="btn-primary" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500;" id="t-addImg">Upload Images</label>
+                <label for="imageUpload" class="btn-primary" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; margin:0;" id="t-addImg">Upload Images</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple onchange="app.handleImageUpload(event)">
                 
                 <input type="text" id="textInput" class="text-input" placeholder="Type text...">
@@ -260,7 +256,7 @@
             <div class="pool-header">
                 <h3 id="t-poolTitle">Item Pool</h3>
             </div>
-            <div class="drop-zone pool-zone" id="itemPool" data-zone-type="pool">
+            <div class="drop-zone pool-zone" id="itemPool" data-zone-id="pool">
                 <div class="drag-notice" id="t-dragNotice">Drop files or items here</div>
             </div>
         </div>
@@ -279,8 +275,8 @@
             pt: {
                 myProjects: "Projetos", createNew: "Nova Tier List", home: "Dashboard",
                 addImg: "Upload de Imagens", addText: "Adicionar Bloco", export: "Exportar PNG", clear: "Limpar Quadro",
-                addTierRow: "Adicionar Nova Linha", poolTitle: "Banco de Itens",
-                dragNotice: "Solte arquivos ou itens aqui", defaultTitle: "Projeto Sem Título", textPlaceholder: "Digite um texto...",
+                addTierRow: "Nova Linha", poolTitle: "Banco de Itens",
+                dragNotice: "Solte arquivos ou imagens aqui", defaultTitle: "Projeto Sem Título", textPlaceholder: "Digite um texto...",
                 alertQuota: "Limite de armazenamento atingido. Não é possível adicionar mais.", confirmClear: "Retornar todos os itens para o banco?",
                 confirmDel: "Deletar este projeto permanentemente?", settingsColor: "Cor", settingsUp: "Subir", settingsDown: "Descer", settingsDel: "Excluir"
             }
@@ -292,23 +288,24 @@
             lang: 'en',
             data: {},
             currentId: null,
+            sortables: [], // Guardar instâncias ativas do Drag and Drop
 
             init() {
-                const saved = localStorage.getItem('finaltimeV4');
+                const saved = localStorage.getItem('finaltimeV5');
                 if (saved) this.data = JSON.parse(saved);
                 
-                const savedLang = localStorage.getItem('finaltimeLangV4');
+                const savedLang = localStorage.getItem('finaltimeLangV5');
                 if(savedLang) {
                     this.lang = savedLang;
                     document.getElementById('langSelect').value = savedLang;
                 }
                 
                 this.updateLangUI();
-                this.setupGlobalDragDrop();
+                this.setupGlobalOSFileDrop(); // Escuta arquivos do Windows APENAS uma vez
                 this.goHome();
             },
 
-            // --- NAVIGATION ---
+            // --- NAVEGAÇÃO ---
             goHome() {
                 document.getElementById('view-editor').classList.remove('active');
                 document.getElementById('view-home').classList.add('active');
@@ -342,7 +339,7 @@
                 });
             },
 
-            // --- PROJECT MANAGEMENT ---
+            // --- GESTÃO DE PROJETOS ---
             createNewProject() {
                 const id = 'proj_' + Date.now();
                 this.data[id] = {
@@ -355,7 +352,7 @@
                         { id: 't4', label: 'C', color: defaultColors[3] },
                         { id: 't5', label: 'D', color: defaultColors[4] }
                     ],
-                    items: [] // Flat array of items: {id, type, content, loc: 'pool' | tier_id}
+                    items: [] 
                 };
                 this.saveDb();
                 this.openProject(id);
@@ -383,21 +380,24 @@
                 this.saveDb();
             },
 
-            // --- EDITOR RENDERING ---
+            // --- RENDERIZAÇÃO E SORTABLE.JS (A Mágica Premium) ---
             renderEditor() {
                 const proj = this.data[this.currentId];
                 const board = document.getElementById('mainBoard');
                 const pool = document.getElementById('itemPool');
                 const d = dict[this.lang];
                 
+                // Limpa TUDO para recriar (Evita bugs de duplicação visual)
                 board.innerHTML = '';
+                this.sortables.forEach(s => s.destroy()); // Destrói drags antigos
+                this.sortables = [];
                 
-                // Keep notice text if pool is empty
+                // Limpa pool e decide se mostra o texto de aviso
                 const poolItems = proj.items.filter(i => i.loc === 'pool');
                 pool.innerHTML = poolItems.length === 0 ? `<div class="drag-notice">${d.dragNotice}</div>` : '';
 
-                // Render Tiers
-                proj.tiers.forEach((tier, index) => {
+                // 1. Renderiza as Linhas
+                proj.tiers.forEach((tier) => {
                     const row = document.createElement('div');
                     row.className = 'tier-row';
                     row.innerHTML = `
@@ -415,25 +415,53 @@
                         </div>
                         <div class="drop-zone" data-zone-id="${tier.id}"></div>
                     `;
-                    
-                    const zone = row.querySelector('.drop-zone');
-                    this.setupDropZone(zone);
                     board.appendChild(row);
                 });
 
-                // Setup Pool Zone
-                this.setupDropZone(pool);
-
-                // Render all items
+                // 2. Coloca os Itens nos lugares certos (Baseado no ID do local)
                 proj.items.forEach(item => {
                     const el = this.createItemElement(item);
-                    if(item.loc === 'pool') pool.appendChild(el);
-                    else {
+                    if(item.loc === 'pool') {
+                        pool.appendChild(el);
+                    } else {
                         const targetZone = board.querySelector(`[data-zone-id="${item.loc}"]`);
                         if(targetZone) targetZone.appendChild(el);
-                        else { item.loc = 'pool'; pool.appendChild(el); } // Fallback if tier was deleted
+                        else { item.loc = 'pool'; pool.appendChild(el); } 
                     }
                 });
+
+                // 3. Ativa o SortableJS (Isso habilita Animações e Touch Mobile perfeito)
+                const zones = document.querySelectorAll('.drop-zone');
+                zones.forEach(zone => {
+                    const s = new Sortable(zone, {
+                        group: 'shared', // Permite arrastar entre as listas
+                        animation: 150,  // Animação suave ao mover
+                        ghostClass: 'sortable-ghost',
+                        onEnd: function (evt) {
+                            // Atualiza os dados quando o arraste termina
+                            const itemId = evt.item.id;
+                            const newLoc = evt.to.dataset.zoneId || 'pool';
+                            const itemData = proj.items.find(i => i.id === itemId);
+                            if(itemData) {
+                                itemData.loc = newLoc;
+                                app.saveDb();
+                            }
+                            // Esconde aviso do pool se ficar vazio
+                            app.checkPoolNotice();
+                        }
+                    });
+                    app.sortables.push(s);
+                });
+            },
+
+            checkPoolNotice() {
+                const pool = document.getElementById('itemPool');
+                const hasItems = pool.querySelectorAll('.item').length > 0;
+                const notice = pool.querySelector('.drag-notice');
+                
+                if(hasItems && notice) notice.style.display = 'none';
+                if(!hasItems && !notice) pool.innerHTML = `<div class="drag-notice">${dict[this.lang].dragNotice}</div>`;
+                if(!hasItems && notice) notice.style.display = 'block';
             },
 
             // --- TIER OPERATIONS ---
@@ -460,7 +488,6 @@
                 const newIdx = idx + direction;
                 if (newIdx < 0 || newIdx >= proj.tiers.length) return;
                 
-                // Swap
                 const temp = proj.tiers[idx];
                 proj.tiers[idx] = proj.tiers[newIdx];
                 proj.tiers[newIdx] = temp;
@@ -484,12 +511,11 @@
                 this.saveDb();
             },
 
-            // --- ITEM CREATION & DRAG ---
+            // --- ITEM CREATION ---
             createItemElement(itemData) {
                 const div = document.createElement('div');
                 div.className = 'item';
-                div.id = itemData.id; // Unique ID for standard HTML5 Drag
-                div.draggable = true;
+                div.id = itemData.id;
 
                 if (itemData.type === 'text') {
                     div.classList.add('text-item');
@@ -498,6 +524,7 @@
                     div.style.backgroundImage = `url(${itemData.content})`;
                 }
 
+                // O NOVO botão de deletar (Esfera perfeita)
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-item';
                 delBtn.innerText = 'X';
@@ -506,17 +533,6 @@
                     this.deleteItem(itemData.id);
                 };
                 div.appendChild(delBtn);
-
-                // HTML5 Drag Events
-                div.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', itemData.id);
-                    e.dataTransfer.effectAllowed = 'move';
-                    setTimeout(() => div.classList.add('dragging'), 0);
-                });
-                
-                div.addEventListener('dragend', () => {
-                    div.classList.remove('dragging');
-                });
 
                 return div;
             },
@@ -548,41 +564,33 @@
                 }
             },
 
-            // --- DROP ZONES & FILE UPLOAD ---
-            setupDropZone(zone) {
-                zone.addEventListener('dragover', e => {
+            // --- SISTEMA DE ARQUIVOS NATIVO (O.S Drag & Drop) ---
+            // Isso garante que você arraste do Desktop e ele crie a imagem apenas UMA VEZ
+            setupGlobalOSFileDrop() {
+                const pool = document.getElementById('itemPool');
+                
+                window.addEventListener('dragover', e => {
                     e.preventDefault();
-                    zone.classList.add('drag-over');
-                });
-                zone.addEventListener('dragleave', e => {
-                    zone.classList.remove('drag-over');
-                });
-                zone.addEventListener('drop', e => {
-                    e.preventDefault();
-                    zone.classList.remove('drag-over');
-                    
-                    const draggedItemId = e.dataTransfer.getData('text/plain');
-                    
-                    if(draggedItemId) {
-                        // Internal Item Drop
-                        const targetZoneId = zone.dataset.zoneId || 'pool';
-                        const proj = this.data[this.currentId];
-                        const item = proj.items.find(i => i.id === draggedItemId);
-                        if(item) {
-                            item.loc = targetZoneId;
-                            this.saveDb();
-                            this.renderEditor();
-                        }
-                    } else if (e.dataTransfer.files.length > 0) {
-                        // File Drop from OS
-                        this.handleFileDrop(e.dataTransfer.files, zone.dataset.zoneId || 'pool');
+                    if(this.currentId && e.dataTransfer.types.includes("Files")) {
+                        pool.classList.add('drag-active');
                     }
                 });
-            },
 
-            setupGlobalDragDrop() {
-                window.addEventListener('dragover', e => e.preventDefault());
-                window.addEventListener('drop', e => e.preventDefault());
+                window.addEventListener('dragleave', e => {
+                    if (e.target === pool || e.target === document.body) {
+                        pool.classList.remove('drag-active');
+                    }
+                });
+
+                window.addEventListener('drop', e => {
+                    e.preventDefault();
+                    pool.classList.remove('drag-active');
+                    
+                    // Checa se o que foi solto é um Arquivo de Fora, e não um item do site
+                    if (e.dataTransfer.files.length > 0 && this.currentId) {
+                        this.handleFileDrop(e.dataTransfer.files, 'pool');
+                    }
+                });
             },
 
             handleImageUpload(e) {
@@ -591,7 +599,6 @@
             },
 
             handleFileDrop(files, targetLoc) {
-                if(!this.currentId) return;
                 Array.from(files).forEach(file => {
                     if (file.type.startsWith('image/')) {
                         const reader = new FileReader();
@@ -605,7 +612,7 @@
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 120; // Optimized size
+                    const MAX_SIZE = 120;
                     let w = img.width; let h = img.height;
 
                     if (w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; } 
@@ -631,7 +638,7 @@
             saveDb() {
                 if(this.currentId && this.data[this.currentId]) this.data[this.currentId].updated = Date.now();
                 try {
-                    localStorage.setItem('finaltimeV4', JSON.stringify(this.data));
+                    localStorage.setItem('finaltimeV5', JSON.stringify(this.data));
                 } catch(e) {
                     alert(dict[this.lang].alertQuota);
                 }
@@ -639,18 +646,25 @@
 
             exportImage() {
                 const area = document.getElementById('capture-area');
+                
+                // Remove os botões de edição temporariamente para a print sair perfeita
+                document.querySelectorAll('.tier-settings').forEach(el => el.style.display = 'none');
+                
                 html2canvas(area, { backgroundColor: '#09090b', scale: 2, useCORS: true }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = (this.data[this.currentId].title || 'TierList') + '.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
+                    
+                    // Volta os botões
+                    document.querySelectorAll('.tier-settings').forEach(el => el.style.display = 'flex');
                 });
             },
 
             // --- TRANSLATION ---
             changeLanguage(l) {
                 this.lang = l;
-                localStorage.setItem('finaltimeLangV4', l);
+                localStorage.setItem('finaltimeLangV5', l);
                 this.updateLangUI();
                 if(this.currentId) this.renderEditor();
             },
@@ -668,8 +682,6 @@
                 document.getElementById('t-poolTitle').innerText = d.poolTitle;
                 document.getElementById('textInput').placeholder = d.textPlaceholder;
                 
-                const dragNotice = document.getElementById('t-dragNotice');
-                if(dragNotice) dragNotice.innerText = d.dragNotice;
                 if(!this.currentId) this.renderHome();
             }
         };
