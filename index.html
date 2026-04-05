@@ -14,11 +14,12 @@
             --bg-elevated: #27272a;
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --danger: #ef4444;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
             --border: #3f3f46;
-            --radius: 8px;
+            --radius: 6px;
             --font-main: 'Inter', sans-serif;
             --font-display: 'Montserrat', sans-serif;
         }
@@ -40,25 +41,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
+            padding: 16px 32px;
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         
         .brand {
             font-family: var(--font-display);
-            font-size: 1.5rem;
-            background: linear-gradient(to right, #38bdf8, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            color: #ffffff;
             cursor: pointer;
+            text-transform: uppercase;
         }
+        .brand span { color: var(--text-muted); font-weight: 400; }
 
-        .nav-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+        .nav-controls { display: flex; gap: 12px; align-items: center; }
 
         select, button {
             font-family: var(--font-main);
@@ -68,131 +67,150 @@
             padding: 8px 16px;
             border-radius: var(--radius);
             cursor: pointer;
+            font-size: 0.9rem;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
-        button:hover { background: var(--border); }
-        .btn-primary { background: var(--accent); border-color: var(--accent); }
+        button:hover { background: #3f3f46; }
+        .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
         .btn-primary:hover { background: var(--accent-hover); }
-        .btn-danger { background: var(--danger); border-color: var(--danger); }
+        .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
 
         /* Views */
         .view { display: none; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .view.active { display: block; }
+        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Home Dashboard */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
+        /* Dashboard */
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .dashboard-header h2 { font-weight: 600; font-size: 1.8rem; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .project-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px; cursor: pointer;
+            transition: all 0.2s; position: relative;
         }
-        .project-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .project-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
+        .project-card:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+        .project-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
         .project-meta { font-size: 0.85rem; color: var(--text-muted); }
-        .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; }
+        .card-actions { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Editor View */
-        .editor-header { text-align: center; margin-bottom: 20px; }
+        /* Editor */
+        .editor-header { text-align: center; margin-bottom: 24px; }
         .editor-title {
-            font-size: 2.5rem; font-family: var(--font-display);
-            background: transparent; border: none; color: white;
-            text-align: center; outline: none; width: 100%;
+            font-size: 2.2rem; font-family: var(--font-display); font-weight: 900;
+            background: transparent; border: none; color: white; text-align: center;
+            outline: none; width: 100%; transition: color 0.2s; text-transform: uppercase;
         }
-        .editor-title:focus { border-bottom: 2px solid var(--accent); }
+        .editor-title:focus { color: var(--accent); }
 
         .toolbar {
-            display: flex;
-            gap: 10px;
-            background: var(--bg-surface);
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            border: 1px solid var(--border);
+            display: flex; justify-content: space-between; background: var(--bg-surface);
+            padding: 16px; border-radius: var(--radius); margin-bottom: 24px;
+            border: 1px solid var(--border); align-items: center; flex-wrap: wrap; gap: 16px;
         }
+        .toolbar-group { display: flex; gap: 12px; align-items: center; }
         
-        .toolbar-group { display: flex; gap: 10px; align-items: center; border-right: 1px solid var(--border); padding-right: 15px;}
-        .toolbar-group:last-child { border: none; }
+        input[type="text"].text-input {
+            background: var(--bg-base); border: 1px solid var(--border); color: white;
+            padding: 8px 12px; border-radius: var(--radius); font-size: 0.9rem; width: 150px;
+        }
+        input[type="text"].text-input:focus { outline: none; border-color: var(--accent); }
 
-        /* Board */
-        #capture-area { background: var(--bg-base); padding: 10px; border-radius: var(--radius); }
-        .board { display: flex; flex-direction: column; gap: 2px; background: #000; border: 2px solid #000; border-radius: 4px; overflow: hidden; }
-        .tier-row { display: flex; min-height: 100px; background: var(--bg-surface); position: relative; }
+        /* Board Area */
+        #capture-area { background: var(--bg-base); padding: 16px; border-radius: 12px; }
+        .board { display: flex; flex-direction: column; gap: 2px; background: #000; border: 2px solid #000; border-radius: 6px; overflow: hidden; }
         
-        .tier-label-container {
-            width: 120px;
-            display: flex;
-            flex-direction: column;
-            border-right: 2px solid #000;
-            position: relative;
-        }
+        .tier-row { display: flex; min-height: 110px; background: #1a1a1a; position: relative; }
+        .tier-label-container { width: 130px; display: flex; flex-direction: column; border-right: 2px solid #000; }
         .tier-label {
             flex-grow: 1; display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: 800; color: #111; text-align: center;
-            outline: none; padding: 10px; word-break: break-word; min-height: 80px;
+            outline: none; padding: 10px; word-break: break-word; min-height: 80px; text-transform: uppercase;
         }
+        
+        /* Tier Tools Panel */
         .tier-settings {
-            height: 20px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-around;
-            align-items: center; font-size: 10px; opacity: 0; transition: opacity 0.2s;
+            display: flex; flex-wrap: wrap; background: #222; border-top: 1px solid #333;
         }
-        .tier-label-container:hover .tier-settings { opacity: 1; }
-        .tier-btn { background: none; border: none; cursor: pointer; padding: 2px 5px; color: #111; font-weight: bold;}
-        .tier-btn:hover { background: rgba(255,255,255,0.4); }
+        .tier-btn {
+            flex: 1; background: none; border: none; border-right: 1px solid #333;
+            color: #aaa; font-size: 0.7rem; padding: 6px 0; font-weight: 600; text-transform: uppercase;
+        }
+        .tier-btn:last-child { border: none; }
+        .tier-btn:hover { background: #333; color: #fff; }
+        .tier-btn.color-picker { position: relative; overflow: hidden; }
+        .tier-btn input[type="color"] {
+            position: absolute; right: -10px; top: -10px; width: 200%; height: 200%;
+            cursor: pointer; opacity: 0;
+        }
 
-        .drop-zone { flex-grow: 1; display: flex; flex-wrap: wrap; align-content: flex-start; min-height: 100px; transition: background 0.2s; padding: 5px; gap: 5px; }
-        .drop-zone.drag-over { background: rgba(255, 255, 255, 0.05); }
+        .drop-zone {
+            flex-grow: 1; display: flex; flex-wrap: wrap; align-content: flex-start;
+            padding: 8px; gap: 8px; transition: background 0.2s; min-height: 110px;
+        }
+        .drop-zone.drag-over { background: rgba(255, 255, 255, 0.08); }
 
-        .add-tier-btn { width: 100%; background: var(--bg-elevated); border: 2px dashed var(--border); color: var(--text-muted); padding: 15px; margin-top: 10px; cursor: pointer; border-radius: var(--radius); }
-        .add-tier-btn:hover { background: var(--border); color: white; }
+        .add-tier-btn {
+            width: 100%; background: var(--bg-surface); border: 1px solid var(--border);
+            color: var(--text-muted); padding: 12px; margin-top: 12px; text-transform: uppercase;
+            font-weight: 600; letter-spacing: 1px;
+        }
+        .add-tier-btn:hover { background: var(--bg-elevated); color: white; border-color: var(--accent); }
 
-        .watermark { text-align: right; padding: 10px 5px 0 0; font-family: var(--font-display); font-size: 0.8rem; color: rgba(255, 255, 255, 0.2); }
+        .watermark { text-align: right; padding: 12px 4px 0 0; font-family: var(--font-display); font-size: 0.75rem; color: rgba(255, 255, 255, 0.15); letter-spacing: 1px; }
 
-        /* Pool */
-        .pool-container { margin-top: 30px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-        .pool-zone { min-height: 150px; border: 2px dashed var(--border); border-radius: var(--radius); padding: 10px; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; align-content: flex-start;}
-        .pool-zone.drag-over { background: rgba(59, 130, 246, 0.1); border-color: var(--accent); }
-        .drag-notice { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 20px; pointer-events: none; }
+        /* Pool Area */
+        .pool-container { margin-top: 40px; }
+        .pool-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .pool-header h3 { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); }
+        
+        .pool-zone {
+            min-height: 180px; background: var(--bg-surface); border: 2px dashed var(--border);
+            border-radius: var(--radius); padding: 12px; display: flex; flex-wrap: wrap;
+            gap: 8px; align-content: flex-start; position: relative;
+        }
+        .pool-zone.drag-over { border-color: var(--accent); background: rgba(37, 99, 235, 0.05); }
+        .drag-notice {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #52525b; font-size: 1rem; font-weight: 500; pointer-events: none; text-align: center; width: 100%;
+        }
 
         /* Items */
         .item {
-            width: 85px; height: 85px; background-color: var(--bg-elevated);
-            background-size: cover; background-position: center;
-            border-radius: 4px; cursor: grab; position: relative;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; font-size: 0.8rem; font-weight: 600; overflow: hidden;
-            border: 2px solid transparent; user-select: none;
+            width: 80px; height: 80px; background-color: var(--bg-elevated);
+            background-size: cover; background-position: center; border-radius: 4px;
+            cursor: grab; position: relative; display: flex; align-items: center;
+            justify-content: center; text-align: center; font-size: 0.8rem; font-weight: 600;
+            border: 2px solid transparent; user-select: none; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: transform 0.1s;
         }
-        .item.text-item { background: var(--bg-elevated); border: 1px solid var(--border); padding: 5px; }
-        .item:hover { z-index: 10; border-color: var(--accent); transform: scale(1.05); }
-        .item.dragging { opacity: 0.5; }
+        .item.text-item { background: var(--bg-elevated); border: 1px solid var(--border); padding: 4px; color: #fff; word-break: break-word;}
+        .item:hover { z-index: 10; border-color: var(--text-main); transform: scale(1.05); }
+        .item:active { cursor: grabbing; }
+        .item.dragging { opacity: 0.4; transform: scale(0.95); }
+        
         .delete-item {
-            position: absolute; top: 0; right: 0; background: red; color: white; border: none;
-            width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: none;
+            position: absolute; top: -6px; right: -6px; background: var(--danger);
+            color: white; border: none; width: 18px; height: 18px; border-radius: 50%;
+            font-size: 9px; cursor: pointer; display: none; font-weight: bold;
         }
         .item:hover .delete-item { display: block; }
         
         input[type="file"] { display: none; }
-        input[type="text"].text-input { background: var(--bg-base); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 4px; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="brand" onclick="app.goHome()">FINALTIME STUDIOS</div>
+        <div class="brand" onclick="app.goHome()">FINALTIME <span>STUDIOS</span></div>
         <div class="nav-controls">
             <select id="langSelect" onchange="app.changeLanguage(this.value)">
                 <option value="en">English</option>
@@ -203,85 +221,83 @@
 
     <main id="view-home" class="view active">
         <div class="dashboard-header">
-            <h2 id="t-myProjects">My Tier Lists</h2>
-            <button class="btn-primary" onclick="app.createNewProject()" id="t-createNew">+ Create New</button>
+            <h2 id="t-myProjects">My Projects</h2>
+            <button class="btn-primary" onclick="app.createNewProject()" id="t-createNew">Create New</button>
         </div>
-        <div class="project-grid" id="projectGrid">
-            </div>
+        <div class="project-grid" id="projectGrid"></div>
     </main>
 
     <main id="view-editor" class="view">
         <div class="editor-header">
-            <input type="text" id="projectTitle" class="editor-title" value="My Tier List" onblur="app.saveCurrent()">
+            <input type="text" id="projectTitle" class="editor-title" value="Untitled" onblur="app.saveCurrentTitle()">
         </div>
 
         <div class="toolbar">
             <div class="toolbar-group">
-                <button onclick="app.goHome()">🏠 <span id="t-home">Home</span></button>
+                <button onclick="app.goHome()" id="t-home">Back to Home</button>
             </div>
             <div class="toolbar-group">
-                <label for="imageUpload" class="btn btn-primary" style="margin:0;">📷 <span id="t-addImg">Add Images</span></label>
+                <label for="imageUpload" class="btn-primary" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500;" id="t-addImg">Upload Images</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple onchange="app.handleImageUpload(event)">
                 
-                <input type="text" id="textInput" class="text-input" placeholder="Text item...">
-                <button onclick="app.addTextItem()">📝 <span id="t-addText">Add Text</span></button>
+                <input type="text" id="textInput" class="text-input" placeholder="Type text...">
+                <button onclick="app.addTextItem()" id="t-addText">Add Block</button>
             </div>
             <div class="toolbar-group">
-                <button onclick="app.exportImage()">📥 <span id="t-export">Export PNG</span></button>
-                <button class="btn-danger" onclick="app.clearCurrentBoard()">🗑️ <span id="t-clear">Clear</span></button>
+                <button class="btn-danger" onclick="app.clearCurrentBoard()" id="t-clear">Clear Board</button>
+                <button class="btn-primary" onclick="app.exportImage()" id="t-export">Export PNG</button>
             </div>
         </div>
 
         <div id="capture-area">
-            <div class="board" id="mainBoard">
-                </div>
+            <div class="board" id="mainBoard"></div>
             <div class="watermark">FINALTIME STUDIOS</div>
         </div>
         
-        <button class="add-tier-btn" onclick="app.addTier()">+ <span id="t-addTierRow">Add Row</span></button>
+        <button class="add-tier-btn" onclick="app.addTier()" id="t-addTierRow">Add New Row</button>
 
         <div class="pool-container">
-            <h3 id="t-poolTitle">Item Pool (Drag files here to upload)</h3>
-            <div class="drop-zone pool-zone" id="itemPool">
-                <div class="drag-notice" id="t-dragNotice">Drag images from your PC or drop items here.</div>
+            <div class="pool-header">
+                <h3 id="t-poolTitle">Item Pool</h3>
+            </div>
+            <div class="drop-zone pool-zone" id="itemPool" data-zone-type="pool">
+                <div class="drag-notice" id="t-dragNotice">Drop files or items here</div>
             </div>
         </div>
     </main>
 
     <script>
-        // --- TRANSLATIONS ---
         const dict = {
             en: {
-                myProjects: "My Tier Lists", createNew: "+ Create New", home: "Home",
-                addImg: "Add Images", addText: "Add Text", export: "Export PNG", clear: "Clear Items",
-                addTierRow: "Add Row", poolTitle: "Item Pool (Drag files here to upload)",
-                dragNotice: "Drag images from your PC or drop items here.", defaultTitle: "Untitled Tier List",
-                alertQuota: "Storage full! Cannot add more images. Try deleting some.", confirmClear: "Clear all items?", confirmDel: "Delete project?"
+                myProjects: "Projects", createNew: "New Tier List", home: "Dashboard",
+                addImg: "Upload Images", addText: "Add Block", export: "Export PNG", clear: "Clear Board",
+                addTierRow: "Add New Row", poolTitle: "Item Pool",
+                dragNotice: "Drop files or items here", defaultTitle: "Untitled Project", textPlaceholder: "Type text...",
+                alertQuota: "Storage limit reached. Cannot add more items.", confirmClear: "Return all items to the pool?",
+                confirmDel: "Permanently delete this project?", settingsColor: "Color", settingsUp: "Up", settingsDown: "Down", settingsDel: "Del"
             },
             pt: {
-                myProjects: "Minhas Tier Lists", createNew: "+ Criar Nova", home: "Início",
-                addImg: "Adicionar Imagens", addText: "Adicionar Texto", export: "Exportar PNG", clear: "Limpar Itens",
-                addTierRow: "Adicionar Linha", poolTitle: "Banco de Itens (Arraste arquivos aqui)",
-                dragNotice: "Arraste imagens do seu PC ou solte itens aqui.", defaultTitle: "Tier List Sem Nome",
-                alertQuota: "Armazenamento cheio! O navegador não permite mais imagens. Delete algumas.", confirmClear: "Apagar todos os itens?", confirmDel: "Deletar projeto?"
+                myProjects: "Projetos", createNew: "Nova Tier List", home: "Dashboard",
+                addImg: "Upload de Imagens", addText: "Adicionar Bloco", export: "Exportar PNG", clear: "Limpar Quadro",
+                addTierRow: "Adicionar Nova Linha", poolTitle: "Banco de Itens",
+                dragNotice: "Solte arquivos ou itens aqui", defaultTitle: "Projeto Sem Título", textPlaceholder: "Digite um texto...",
+                alertQuota: "Limite de armazenamento atingido. Não é possível adicionar mais.", confirmClear: "Retornar todos os itens para o banco?",
+                confirmDel: "Deletar este projeto permanentemente?", settingsColor: "Cor", settingsUp: "Subir", settingsDown: "Descer", settingsDel: "Excluir"
             }
         };
 
-        const defaultColors = ['#ff7f7f', '#ffbf7f', '#ffff7f', '#7fff7f', '#7fbfff', '#bf7fff'];
+        const defaultColors = ['#ef4444', '#f97316', '#facc15', '#4ade80', '#3b82f6', '#a855f7', '#71717a', '#ffffff'];
 
-        // --- APP LOGIC ---
         const app = {
             lang: 'en',
-            data: {}, // All projects
+            data: {},
             currentId: null,
-            draggedItem: null,
 
             init() {
-                // Load data
-                const saved = localStorage.getItem('finaltimeV3');
+                const saved = localStorage.getItem('finaltimeV4');
                 if (saved) this.data = JSON.parse(saved);
                 
-                const savedLang = localStorage.getItem('finaltimeLang');
+                const savedLang = localStorage.getItem('finaltimeLangV4');
                 if(savedLang) {
                     this.lang = savedLang;
                     document.getElementById('langSelect').value = savedLang;
@@ -292,10 +308,9 @@
                 this.goHome();
             },
 
-            // --- NAVIGATION & PROJECTS ---
+            // --- NAVIGATION ---
             goHome() {
                 document.getElementById('view-editor').classList.remove('active');
-                document.getElementById('view-home').classList.active = true;
                 document.getElementById('view-home').classList.add('active');
                 this.currentId = null;
                 this.renderHome();
@@ -304,41 +319,43 @@
             renderHome() {
                 const grid = document.getElementById('projectGrid');
                 grid.innerHTML = '';
-                
                 const ids = Object.keys(this.data);
+                
                 if(ids.length === 0) {
-                    grid.innerHTML = `<p style="color:var(--text-muted);">No tier lists yet. Create one!</p>`;
+                    grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">No projects found.</p>`;
                     return;
                 }
 
-                ids.forEach(id => {
+                ids.sort((a,b) => this.data[b].updated - this.data[a].updated).forEach(id => {
                     const proj = this.data[id];
                     const card = document.createElement('div');
                     card.className = 'project-card';
                     card.innerHTML = `
-                        <div class="project-title" onclick="app.openProject('${id}')">${proj.title || 'Untitled'}</div>
-                        <div class="project-meta">Updated: ${new Date(proj.updated).toLocaleDateString()}</div>
+                        <div class="project-title">${proj.title}</div>
+                        <div class="project-meta">Last edit: ${new Date(proj.updated).toLocaleDateString()}</div>
                         <div class="card-actions">
-                            <button class="btn-danger" style="padding: 4px 8px; font-size:12px;" onclick="app.deleteProject('${id}')">Delete</button>
+                            <button onclick="app.openProject('${id}')">Open Editor</button>
+                            <button class="btn-danger" onclick="app.deleteProject('${id}')">Delete</button>
                         </div>
                     `;
                     grid.appendChild(card);
                 });
             },
 
+            // --- PROJECT MANAGEMENT ---
             createNewProject() {
                 const id = 'proj_' + Date.now();
                 this.data[id] = {
                     title: dict[this.lang].defaultTitle,
                     updated: Date.now(),
                     tiers: [
-                        { id: 't1', label: 'S', color: '#ff7f7f', items: [] },
-                        { id: 't2', label: 'A', color: '#ffbf7f', items: [] },
-                        { id: 't3', label: 'B', color: '#ffff7f', items: [] },
-                        { id: 't4', label: 'C', color: '#7fff7f', items: [] },
-                        { id: 't5', label: 'D', color: '#7fbfff', items: [] }
+                        { id: 't1', label: 'S', color: defaultColors[0] },
+                        { id: 't2', label: 'A', color: defaultColors[1] },
+                        { id: 't3', label: 'B', color: defaultColors[2] },
+                        { id: 't4', label: 'C', color: defaultColors[3] },
+                        { id: 't5', label: 'D', color: defaultColors[4] }
                     ],
-                    pool: []
+                    items: [] // Flat array of items: {id, type, content, loc: 'pool' | tier_id}
                 };
                 this.saveDb();
                 this.openProject(id);
@@ -348,10 +365,7 @@
                 this.currentId = id;
                 document.getElementById('view-home').classList.remove('active');
                 document.getElementById('view-editor').classList.add('active');
-                
-                const proj = this.data[id];
-                document.getElementById('projectTitle').value = proj.title;
-                
+                document.getElementById('projectTitle').value = this.data[id].title;
                 this.renderEditor();
             },
 
@@ -363,15 +377,24 @@
                 }
             },
 
-            // --- EDITOR RENDER ---
+            saveCurrentTitle() {
+                if(!this.currentId) return;
+                this.data[this.currentId].title = document.getElementById('projectTitle').value;
+                this.saveDb();
+            },
+
+            // --- EDITOR RENDERING ---
             renderEditor() {
                 const proj = this.data[this.currentId];
                 const board = document.getElementById('mainBoard');
                 const pool = document.getElementById('itemPool');
+                const d = dict[this.lang];
                 
-                // Clear existing
                 board.innerHTML = '';
-                pool.innerHTML = `<div class="drag-notice" id="t-dragNotice">${dict[this.lang].dragNotice}</div>`;
+                
+                // Keep notice text if pool is empty
+                const poolItems = proj.items.filter(i => i.loc === 'pool');
+                pool.innerHTML = poolItems.length === 0 ? `<div class="drag-notice">${d.dragNotice}</div>` : '';
 
                 // Render Tiers
                 proj.tiers.forEach((tier, index) => {
@@ -379,80 +402,94 @@
                     row.className = 'tier-row';
                     row.innerHTML = `
                         <div class="tier-label-container">
-                            <div class="tier-label" contenteditable="true" style="background-color: ${tier.color};" onblur="app.updateTierLabel(${index}, this.innerText)">${tier.label}</div>
+                            <div class="tier-label" contenteditable="true" style="background-color: ${tier.color}; color: #000;" onblur="app.updateTierLabel('${tier.id}', this.innerText)">${tier.label}</div>
                             <div class="tier-settings">
-                                <button class="tier-btn" onclick="app.changeTierColor(${index})">🎨</button>
-                                <button class="tier-btn" onclick="app.deleteTier(${index})">🗑️</button>
+                                <button class="tier-btn color-picker" title="${d.settingsColor}">
+                                    C
+                                    <input type="color" value="${tier.color}" onchange="app.changeTierColor('${tier.id}', this.value)">
+                                </button>
+                                <button class="tier-btn" onclick="app.moveTier('${tier.id}', -1)" title="${d.settingsUp}">U</button>
+                                <button class="tier-btn" onclick="app.moveTier('${tier.id}', 1)" title="${d.settingsDown}">D</button>
+                                <button class="tier-btn" onclick="app.deleteTier('${tier.id}')" title="${d.settingsDel}">X</button>
                             </div>
                         </div>
-                        <div class="drop-zone" data-zone-type="tier" data-tier-idx="${index}"></div>
+                        <div class="drop-zone" data-zone-id="${tier.id}"></div>
                     `;
                     
                     const zone = row.querySelector('.drop-zone');
                     this.setupDropZone(zone);
-                    
-                    // Render items in this tier
-                    tier.items.forEach((item, iIdx) => {
-                        zone.appendChild(this.createItemElement(item, 'tier', index, iIdx));
-                    });
-
                     board.appendChild(row);
                 });
 
-                // Setup Pool drop zone
+                // Setup Pool Zone
                 this.setupDropZone(pool);
-                pool.dataset.zoneType = 'pool';
 
-                // Render items in pool
-                proj.pool.forEach((item, idx) => {
-                    pool.appendChild(this.createItemElement(item, 'pool', null, idx));
+                // Render all items
+                proj.items.forEach(item => {
+                    const el = this.createItemElement(item);
+                    if(item.loc === 'pool') pool.appendChild(el);
+                    else {
+                        const targetZone = board.querySelector(`[data-zone-id="${item.loc}"]`);
+                        if(targetZone) targetZone.appendChild(el);
+                        else { item.loc = 'pool'; pool.appendChild(el); } // Fallback if tier was deleted
+                    }
                 });
             },
 
-            // --- TIER MANAGEMENT ---
+            // --- TIER OPERATIONS ---
             addTier() {
                 const proj = this.data[this.currentId];
                 const color = defaultColors[proj.tiers.length % defaultColors.length];
-                proj.tiers.push({ id: 't_'+Date.now(), label: 'NEW', color: color, items: [] });
-                this.saveCurrent();
+                proj.tiers.push({ id: 't_'+Date.now(), label: 'NEW', color: color });
+                this.saveDb();
                 this.renderEditor();
             },
 
-            deleteTier(idx) {
+            deleteTier(tierId) {
                 const proj = this.data[this.currentId];
-                // Move items back to pool
-                if(proj.tiers[idx].items.length > 0) {
-                    proj.pool = proj.pool.concat(proj.tiers[idx].items);
-                }
-                proj.tiers.splice(idx, 1);
-                this.saveCurrent();
+                proj.items.forEach(i => { if(i.loc === tierId) i.loc = 'pool'; });
+                proj.tiers = proj.tiers.filter(t => t.id !== tierId);
+                this.saveDb();
                 this.renderEditor();
             },
 
-            changeTierColor(idx) {
-                const colors = ['#ff7f7f', '#ffbf7f', '#ffff7f', '#7fff7f', '#7fbfff', '#bf7fff', '#111111', '#ffffff'];
+            moveTier(tierId, direction) {
                 const proj = this.data[this.currentId];
-                let currentIdx = colors.indexOf(proj.tiers[idx].color);
-                proj.tiers[idx].color = colors[(currentIdx + 1) % colors.length];
-                this.saveCurrent();
+                const idx = proj.tiers.findIndex(t => t.id === tierId);
+                if (idx < 0) return;
+                const newIdx = idx + direction;
+                if (newIdx < 0 || newIdx >= proj.tiers.length) return;
+                
+                // Swap
+                const temp = proj.tiers[idx];
+                proj.tiers[idx] = proj.tiers[newIdx];
+                proj.tiers[newIdx] = temp;
+                
+                this.saveDb();
                 this.renderEditor();
             },
 
-            updateTierLabel(idx, text) {
-                this.data[this.currentId].tiers[idx].label = text;
-                this.saveCurrent();
+            changeTierColor(tierId, colorHex) {
+                const proj = this.data[this.currentId];
+                const tier = proj.tiers.find(t => t.id === tierId);
+                if(tier) tier.color = colorHex;
+                this.saveDb();
+                this.renderEditor();
             },
 
-            // --- ITEM MANAGEMENT ---
-            createItemElement(itemData, locType, tierIdx, itemIdx) {
+            updateTierLabel(tierId, text) {
+                const proj = this.data[this.currentId];
+                const tier = proj.tiers.find(t => t.id === tierId);
+                if(tier) tier.label = text;
+                this.saveDb();
+            },
+
+            // --- ITEM CREATION & DRAG ---
+            createItemElement(itemData) {
                 const div = document.createElement('div');
                 div.className = 'item';
+                div.id = itemData.id; // Unique ID for standard HTML5 Drag
                 div.draggable = true;
-                
-                // Store original location to handle logic on drop
-                div.dataset.locType = locType;
-                div.dataset.tierIdx = tierIdx;
-                div.dataset.itemIdx = itemIdx;
 
                 if (itemData.type === 'text') {
                     div.classList.add('text-item');
@@ -466,18 +503,19 @@
                 delBtn.innerText = 'X';
                 delBtn.onclick = (e) => {
                     e.stopPropagation();
-                    this.deleteItem(locType, tierIdx, itemIdx);
+                    this.deleteItem(itemData.id);
                 };
                 div.appendChild(delBtn);
 
-                // Drag events
+                // HTML5 Drag Events
                 div.addEventListener('dragstart', (e) => {
-                    this.draggedItem = div;
+                    e.dataTransfer.setData('text/plain', itemData.id);
+                    e.dataTransfer.effectAllowed = 'move';
                     setTimeout(() => div.classList.add('dragging'), 0);
                 });
+                
                 div.addEventListener('dragend', () => {
                     div.classList.remove('dragging');
-                    this.draggedItem = null;
                 });
 
                 return div;
@@ -488,36 +526,29 @@
                 const text = input.value.trim();
                 if(!text) return;
                 
-                this.data[this.currentId].pool.push({ type: 'text', content: text });
+                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
+                this.data[this.currentId].items.push({ id: id, type: 'text', content: text, loc: 'pool' });
                 input.value = '';
-                this.saveCurrent();
+                this.saveDb();
                 this.renderEditor();
             },
 
-            deleteItem(locType, tierIdx, itemIdx) {
+            deleteItem(itemId) {
                 const proj = this.data[this.currentId];
-                if(locType === 'pool') {
-                    proj.pool.splice(itemIdx, 1);
-                } else {
-                    proj.tiers[tierIdx].items.splice(itemIdx, 1);
-                }
-                this.saveCurrent();
+                proj.items = proj.items.filter(i => i.id !== itemId);
+                this.saveDb();
                 this.renderEditor();
             },
 
             clearCurrentBoard() {
                 if(confirm(dict[this.lang].confirmClear)) {
-                    const proj = this.data[this.currentId];
-                    proj.tiers.forEach(t => {
-                        proj.pool = proj.pool.concat(t.items);
-                        t.items = [];
-                    });
-                    this.saveCurrent();
+                    this.data[this.currentId].items.forEach(i => i.loc = 'pool');
+                    this.saveDb();
                     this.renderEditor();
                 }
             },
 
-            // --- DRAG AND DROP ZONES ---
+            // --- DROP ZONES & FILE UPLOAD ---
             setupDropZone(zone) {
                 zone.addEventListener('dragover', e => {
                     e.preventDefault();
@@ -530,110 +561,77 @@
                     e.preventDefault();
                     zone.classList.remove('drag-over');
                     
-                    // IF it's an internal item drop
-                    if(this.draggedItem) {
-                        this.handleInternalDrop(this.draggedItem, zone);
-                    } 
-                    // IF it's a file dropped from OS
-                    else if (e.dataTransfer.files.length > 0) {
-                        this.handleFileDrop(e.dataTransfer.files);
+                    const draggedItemId = e.dataTransfer.getData('text/plain');
+                    
+                    if(draggedItemId) {
+                        // Internal Item Drop
+                        const targetZoneId = zone.dataset.zoneId || 'pool';
+                        const proj = this.data[this.currentId];
+                        const item = proj.items.find(i => i.id === draggedItemId);
+                        if(item) {
+                            item.loc = targetZoneId;
+                            this.saveDb();
+                            this.renderEditor();
+                        }
+                    } else if (e.dataTransfer.files.length > 0) {
+                        // File Drop from OS
+                        this.handleFileDrop(e.dataTransfer.files, zone.dataset.zoneId || 'pool');
                     }
                 });
             },
 
-            handleInternalDrop(itemEl, dropZone) {
-                const proj = this.data[this.currentId];
-                
-                // Get original item data
-                const sType = itemEl.dataset.locType;
-                const sTier = itemEl.dataset.tierIdx;
-                const sItem = itemEl.dataset.itemIdx;
-                
-                let itemObj;
-                if(sType === 'pool') itemObj = proj.pool.splice(sItem, 1)[0];
-                else itemObj = proj.tiers[sTier].items.splice(sItem, 1)[0];
-
-                // Determine target
-                const tType = dropZone.dataset.zoneType;
-                if(tType === 'pool') {
-                    proj.pool.push(itemObj);
-                } else {
-                    const tTier = dropZone.dataset.tierIdx;
-                    proj.tiers[tTier].items.push(itemObj);
-                }
-
-                this.saveCurrent();
-                this.renderEditor();
-            },
-
-            // --- IMAGE COMPRESSION & UPLOAD ---
             setupGlobalDragDrop() {
-                // Prevent browser opening file if missed drop zone
                 window.addEventListener('dragover', e => e.preventDefault());
                 window.addEventListener('drop', e => e.preventDefault());
             },
 
             handleImageUpload(e) {
-                this.handleFileDrop(e.target.files);
+                this.handleFileDrop(e.target.files, 'pool');
                 e.target.value = '';
             },
 
-            handleFileDrop(files) {
+            handleFileDrop(files, targetLoc) {
                 if(!this.currentId) return;
                 Array.from(files).forEach(file => {
                     if (file.type.startsWith('image/')) {
                         const reader = new FileReader();
-                        reader.onload = (event) => this.compressAndSaveImage(event.target.result);
+                        reader.onload = (event) => this.compressAndSaveImage(event.target.result, targetLoc);
                         reader.readAsDataURL(file);
                     }
                 });
             },
 
-            // Resizes image so localStorage doesn't crash immediately
-            compressAndSaveImage(dataUrl) {
+            compressAndSaveImage(dataUrl, targetLoc) {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 150; // Tiers don't need HD
-                    let w = img.width;
-                    let h = img.height;
+                    const MAX_SIZE = 120; // Optimized size
+                    let w = img.width; let h = img.height;
 
-                    if (w > h && w > MAX_SIZE) {
-                        h *= MAX_SIZE / w; w = MAX_SIZE;
-                    } else if (h > MAX_SIZE) {
-                        w *= MAX_SIZE / h; h = MAX_SIZE;
-                    }
+                    if (w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; } 
+                    else if (h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; }
 
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
                     
-                    // 0.7 quality JPEG drastically reduces base64 string size
-                    const compressedUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    const compressedUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
                     
                     try {
-                        this.data[this.currentId].pool.push({ type: 'image', content: compressedUrl });
-                        this.saveCurrent();
+                        this.data[this.currentId].items.push({ id: id, type: 'image', content: compressedUrl, loc: targetLoc });
+                        this.saveDb();
                         this.renderEditor();
-                    } catch (e) {
-                        alert(dict[this.lang].alertQuota);
-                    }
+                    } catch (e) { alert(dict[this.lang].alertQuota); }
                 };
                 img.src = dataUrl;
             },
 
             // --- UTILS ---
-            saveCurrent() {
-                if(this.currentId) {
-                    this.data[this.currentId].title = document.getElementById('projectTitle').value;
-                    this.data[this.currentId].updated = Date.now();
-                }
-                this.saveDb();
-            },
-
             saveDb() {
+                if(this.currentId && this.data[this.currentId]) this.data[this.currentId].updated = Date.now();
                 try {
-                    localStorage.setItem('finaltimeV3', JSON.stringify(this.data));
+                    localStorage.setItem('finaltimeV4', JSON.stringify(this.data));
                 } catch(e) {
                     alert(dict[this.lang].alertQuota);
                 }
@@ -641,7 +639,7 @@
 
             exportImage() {
                 const area = document.getElementById('capture-area');
-                html2canvas(area, { backgroundColor: '#09090b', scale: 2 }).then(canvas => {
+                html2canvas(area, { backgroundColor: '#09090b', scale: 2, useCORS: true }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = (this.data[this.currentId].title || 'TierList') + '.png';
                     link.href = canvas.toDataURL('image/png');
@@ -649,12 +647,12 @@
                 });
             },
 
-            // --- I18N ---
+            // --- TRANSLATION ---
             changeLanguage(l) {
                 this.lang = l;
-                localStorage.setItem('finaltimeLang', l);
+                localStorage.setItem('finaltimeLangV4', l);
                 this.updateLangUI();
-                if(this.currentId) this.renderEditor(); // Re-render to update dynamic text
+                if(this.currentId) this.renderEditor();
             },
 
             updateLangUI() {
@@ -668,13 +666,14 @@
                 document.getElementById('t-clear').innerText = d.clear;
                 document.getElementById('t-addTierRow').innerText = d.addTierRow;
                 document.getElementById('t-poolTitle').innerText = d.poolTitle;
+                document.getElementById('textInput').placeholder = d.textPlaceholder;
                 
                 const dragNotice = document.getElementById('t-dragNotice');
                 if(dragNotice) dragNotice.innerText = d.dragNotice;
+                if(!this.currentId) this.renderHome();
             }
         };
 
-        // Boot
         window.onload = () => app.init();
     </script>
 </body>
